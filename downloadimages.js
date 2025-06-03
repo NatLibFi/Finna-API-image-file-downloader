@@ -142,10 +142,12 @@ async function loadImages(datasource) {
         if (defaults.verbose) {
             console.log(process.memoryUsage());
         }
-        console.log(`Loaded: ${++totalImagesLoaded} / ${totalImages}`);
+        console.clear(); // clear the console buffer after every image 
+        imagesLoaded = ++totalImagesLoaded;
+        process.stdout.write("Loaded:  " + imagesLoaded.toString() + " / " + totalImages.toString() + "   ");
         console.timeEnd('Loaded in');
         if (_queue.length === 0) {
-            _queue = getImagesToQueue(datasource);
+            _queue = getImagesToQueue(datasource); 
         }
     }
     console.log(`Total images downloaded: ${imagesLoaded}\n`)
