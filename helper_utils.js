@@ -32,13 +32,15 @@ let mainMemoryObject;
  */
 function getPossibleFolderToSave(subFolderPath, currentFolder)
 {
-    if (currentFolder !== '') {
+    if (subFolderPath == currentFolder) {
         // We have a folder set to save records into. Calculate that it does not exceed the max amount
         if (fs.readdirSync(currentFolder, isHidden).length < defaults.maxFilesPerFolder) {
             return currentFolder;
         }
     }
-    console.log(subFolderPath);
+    if (defaults.verbose) {
+      console.log(subFolderPath);
+    }
     let newFolder = '';
     let directories = getDirectoriesFromDirectory(subFolderPath);
     directories.forEach(directory => {

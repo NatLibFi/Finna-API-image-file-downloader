@@ -166,7 +166,7 @@ class SearchHandler {
                     }
                     this._currentFolderToSaveInto = utils.getFolder(subFolderPath, this._currentFolderToSaveInto);
 
-                    const fileName = `${record.id}.json`;
+                    const fileName = `${encodeURIComponent(record.id)}.json`;
 
                     const filePath = `${this._currentFolderToSaveInto}/${fileName}`;
                     if (fs.existsSync(filePath)) {

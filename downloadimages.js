@@ -173,7 +173,7 @@ async function waitForImage(image) {
         }
     }).then(buffer => {
         const savePath = utils.getFolder(image.subPath, '');
-        writeFile(`${savePath}/${image.name}`, Buffer.from(buffer));
+        writeFile(`${savePath}/${encodeURIComponent(image.name)}`, Buffer.from(buffer));
         if (image.isLastImage) {
             const recordJson = JSON.parse(fs.readFileSync(image.record));
             recordJson.loaded = true;
