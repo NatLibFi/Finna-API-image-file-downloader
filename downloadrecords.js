@@ -155,6 +155,13 @@ class SearchHandler {
             if (data.records) {
                 data.records.forEach(record => {
                     const recordID = record.id;
+                    if (defaults.coordinatesFormat == 'WGS84') {
+                        if ((typeof record.geoCenter.lat !== 'undefined') && (typeof record.geoCenter.lon !== 'undefined')) {
+                            record.geoCenter = record.geoCenter.lat + ', ' + record.geoCenter.lon;
+                        } else {
+                            record.geoCenter = '';
+                        }
+                    }
                     const recordIDSplitted = recordID.split('.', 2);
                     let subFolderName = 'unknown';
                     if (recordIDSplitted.length > 1) {
