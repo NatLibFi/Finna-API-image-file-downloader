@@ -7,6 +7,7 @@
  * headers: Object containing headers for requests, X-API-KEY: Api key obtained from finna, User-Agent: Descriptive user agent i.e small description + email
  * recordFields: Which record fields to return when fetching data. [id, images] has to be defined for this script to work.
  * coordinatesFormat: What format is used to display coordinates (supported formats: 'WGS84', any other value will result in coordinates being displayed as they come from the API)
+ * jsonFormat: What JSON format is used (supported formats: 'JSON-LD', any other value will result in json being formatted as it comes the API)
  * Default fields are set. For more fields, look at: https://api.finna.fi/swagger-ui, scroll down for schemas and open Record under
  * schemas.
  */
@@ -19,7 +20,7 @@ module.exports = {
   timeOut: 30000,
   headers: {
       "User-Agent": "API-TESTING (EXAMPLE@EMAIL.COM)",
-      "X-API-KEY": 'JAeeVvGrxvy0UcOrOEfrPudT3LFOzuZ9'
+      "X-API-KEY": ''
   },
   recordFields: [
     'id',
@@ -38,7 +39,9 @@ module.exports = {
     'title',
     'urls',
     'year',
-    'geoCenter'
+    'geoCenter',
+    'geographicSubjects',
   ],
-  coordinatesFormat: 'WGS84'
+  coordinatesFormat: 'WGS84',
+  jsonFormat: 'JSON-LD'
 };
