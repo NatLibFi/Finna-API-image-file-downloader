@@ -5,6 +5,8 @@ const readline = require('readline');
 
 const utils = require('./helper_utils.js');
 
+const toJsonLD = require('./jsonLD.js');
+
 // Create an interface for input and output
 const rl = readline.createInterface({
   input: process.stdin,
@@ -173,13 +175,22 @@ class SearchHandler {
                     }
                     this._currentFolderToSaveInto = utils.getFolder(subFolderPath, this._currentFolderToSaveInto);
 
-                    const fileName = `${encodeURIComponent(record.id)}.json`;
+                    const fileName = `${record.id}.json`.replaceAll('/', '-');
 
                     const filePath = `${this._currentFolderToSaveInto}/${fileName}`;
                     if (fs.existsSync(filePath)) {
                         return;
                     }
-                    const finalFile = {
+                    let finalFile = {};
+                    if (defaults.jsonLD) {
+                        let jsonLDFolderPath = `${this._currentFolderToSaveInto}-JSONLD`;
+                        if (!fs.existsSync(jsonLDFolderPath)){
+                            fs.mkdirSync(jsonLDFolderPath);
+                        }
+                        let finalJSONLD = toJsonLD.createJsonLDRecord(record);
+                        fs.writeFileSync(`${jsonLDFolderPath}/${fileName}`, JSON.stringify(finalJSONLD));
+                    }
+                    finalFile = {
                         'record': record,
                         'datasource': subFolderName,
                         'loaded': false,

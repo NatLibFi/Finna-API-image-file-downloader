@@ -48,10 +48,11 @@ function getImagesToQueue(datasource) {
             if (currentImages > imagesPerDirectory) {
                 return;
             }
-            if (!record.startsWith(datasource)) {
+            if (!record.startsWith(datasource) || dir.endsWith('-JSONLD')) {
                 return;
             }
             const fullPathForRecord = `${subFolderPath}/${dir}/${record}`;
+
             const loadedRecord = fs.readFileSync(fullPathForRecord);
             let recordJSON = JSON.parse(loadedRecord);
             if (recordJSON.loaded) { return; }
@@ -69,13 +70,17 @@ function getImagesToQueue(datasource) {
             }
             console.log(imageSubPath);
             recordJSON.record.images.forEach(img => {
+                let imageName = recordJSON.record.id.replaceAll('/', '-');
                 const curImg = {
                     url: `${defaults.viewBaseUrl}Cover/Pipe?id=${recordJSON.record.id}&index=${i}&size=large`,
                     subPath: `${imageSubPath}`,
-                    name: `${recordJSON.record.id}-${i++}.jpg`,
+                    name: `${imageName}-${i++}.jpg`,
                     record: fullPathForRecord,
                     isLastImage: i >= amountOfImages
                 };
+                if (defaults.jsonLD) {
+                    curImg.jsonLDRecord = `${subFolderPath}/${dir}-JSONLD/${record}`;
+                }
                 imagesQueue.push(curImg);
                 currentImages++;
             });
@@ -98,7 +103,7 @@ function calculateImages(datasource)
     utils.getDirs(subFolderPath).forEach(dir => {
         const currentFolderPath = `${subFolderPath}/${dir}`;
         fs.readdirSync(currentFolderPath).forEach(record => {
-            if (!record.startsWith(datasource)) {
+            if (!record.startsWith(datasource) || dir.endsWith('-JSONLD')) {
                 return;
             }
             const fullPathForRecord = `${currentFolderPath}/${record}`;
@@ -173,7 +178,19 @@ async function waitForImage(image) {
         }
     }).then(buffer => {
         const savePath = utils.getFolder(image.subPath, '');
-        writeFile(`${savePath}/${encodeURIComponent(image.name)}`, Buffer.from(buffer));
+        const imageName = image.name.replaceAll('/')
+        writeFile(`${savePath}/${image.name}`, Buffer.from(buffer));
+        if (defaults.jsonLD) {
+            if (fs.existsSync(image.jsonLDRecord)) {
+                const recordJsonLD = JSON.parse(fs.readFileSync(image.jsonLDRecord));
+                let dcPhoto = {
+                    "@type": "Photo",
+                    "path": `${savePath}/${image.name}`
+                };
+                recordJsonLD['@graph']['photo'].push(dcPhoto);
+                fs.writeFileSync(image.jsonLDRecord, JSON.stringify(recordJsonLD));
+            }
+        }
         if (image.isLastImage) {
             const recordJson = JSON.parse(fs.readFileSync(image.record));
             recordJson.loaded = true;
