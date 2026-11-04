@@ -1,5 +1,4 @@
-# Finna-API-image-file-downloader
-
+# FIMDT-Finna-Image-and-Metadata-Download-tool
 This is an example script for using Finna api with cursor and downloading images.
 
 General
