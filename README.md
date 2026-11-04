@@ -1,10 +1,10 @@
-# Finna-API-image-file-downloader
+# FIMDT-Finna-Image-and-Metadata-Download-Tool
 
-This is an example script for using Finna api with cursor and downloading images.
+This tool allows automatic mass downloading od images and metadata from organisations that provide them Finna.fi.
 
-General
+How to use
 ------------
-See wiki for installation and usage.
+See Releases for the latest instructions. 
 
 License
 ------------
